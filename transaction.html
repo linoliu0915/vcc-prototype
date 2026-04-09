@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>拉卡拉国际VCC - 交易查询</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', 'Microsoft YaHei', sans-serif; background-color: #f8fafc; }
+        .sidebar-active { background-color: rgba(59, 130, 246, 0.1); color: #2563eb; border-right: 4px solid #2563eb; }
+        .tab-active { color: #2563eb; border-bottom: 2px solid #2563eb; }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+        .table-wrapper::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        .table-wrapper::-webkit-scrollbar-corner {
+            background: #f1f1f1;
+        }
+        
+        table {
+            width: 100%;
+            min-width: 1600px;
+            border-collapse: collapse;
+        }
+</style>
+</head>
+<body class="flex min-h-screen text-slate-800">
+<!-- Sidebar -->
+<aside class="w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full">
+<div class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+<span class="iconify text-white text-2xl" data-icon="mdi:bank-outline"></span>
+</div>
+<span class="text-xl font-bold text-blue-900 leading-tight">拉卡拉国际<br/><span class="text-sm font-medium opacity-70 text-blue-600">VCC 直客端</span></span>
+</div>
+<nav class="flex-1 mt-4">
+<a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="index.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:dashboard-outline"></span>
+<span>工作台首页</span>
+</a>
+<a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="cards.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:credit-card-outline"></span>
+<span>卡片管理</span>
+</a>
+<a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="finance.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:account-balance-wallet-outline"></span>
+<span>资金管理</span>
+</a>
+<a class="flex items-center px-6 py-4 sidebar-active transition-all group" href="transaction.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:list-alt-outline"></span>
+<span class="font-semibold">交易查询</span>
+</a>
+<a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="downloads.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:download-for-offline-outline"></span>
+<span>文件下载</span>
+</a>
+</nav>
+</aside>
+<main class="ml-64 flex-1">
+<header class="h-20 bg-white border-b border-slate-200 px-8 flex flex-col justify-end sticky top-0 z-10">
+<div class="flex items-center justify-between mb-2">
+<h1 class="text-xl font-bold text-slate-800">交易查询</h1>
+<button class="bg-blue-50 text-blue-600 text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-600 hover:text-white transition-all">
+<span class="iconify" data-icon="material-symbols:download-rounded"></span>
+                    导出当前记录
+                </button>
+</div>
+<div class="flex gap-8">
+<button class="text-sm font-bold pb-4 transition-all tab-active px-2" id="tab-auth" onclick="switchTab('auth')">授权明细查询</button>
+<button class="text-sm font-medium pb-4 text-slate-400 hover:text-slate-600 transition-all px-2" id="tab-settle" onclick="switchTab('settle')">清算明细查询</button>
+</div>
+</header>
+<div class="p-8">
+
+<!-- Content Area - Authorization Details -->
+<div id="content-auth">
+<!-- Filters -->
+<div class="bg-white rounded-2xl p-6 mb-6 border border-slate-100 shadow-sm">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">日期筛选</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" type="date" value="2026-03-01"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">至</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" type="date" value="2026-03-20"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">卡ID</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" placeholder="输入卡ID" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">业务订单号</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" placeholder="输入业务订单号" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">授权ID</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" placeholder="输入授权ID" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">源授权ID</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" placeholder="输入源授权ID" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">交易类型</label>
+<select class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500">
+<option>全部</option>
+<option>授权消费</option>
+<option>授权消费追加</option>
+<option>授权贷记</option>
+<option>授权退款</option>
+<option>账户验证</option>
+<option>余额查询</option>
+<option>授权冲正</option>
+</select>
+</div>
+<div class="flex gap-2 lg:col-span-6 justify-end">
+<button class="bg-slate-100 text-slate-600 px-4 py-2.5 rounded-xl text-sm hover:bg-slate-200"><span class="iconify" data-icon="material-symbols:refresh"></span></button>
+<button class="bg-slate-800 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-900">查询</button>
+</div>
+</div>
+</div>
+
+<!-- Table -->
+<div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+<div class="table-wrapper">
+<table class="w-full text-left text-xs">
+<thead class="bg-slate-50 text-slate-400 uppercase font-bold sticky top-0 z-10">
+<tr>
+<th class="px-3 py-3 whitespace-nowrap">业务订单号</th>
+<th class="px-3 py-3 whitespace-nowrap">授权码</th>
+<th class="px-3 py-3 whitespace-nowrap">卡号</th>
+<th class="px-3 py-3 whitespace-nowrap">卡ID</th>
+<th class="px-3 py-3 whitespace-nowrap">卡产品</th>
+<th class="px-3 py-3 whitespace-nowrap">卡别名</th>
+<th class="px-3 py-3 whitespace-nowrap">交易类型</th>
+<th class="px-3 py-3 whitespace-nowrap">授权时间</th>
+<th class="px-3 py-3 whitespace-nowrap">记账金额</th>
+<th class="px-3 py-3 whitespace-nowrap">交易状态</th>
+<th class="px-3 py-3 whitespace-nowrap">商户名称</th>
+<th class="px-3 py-3 whitespace-nowrap">MCC</th>
+<th class="px-3 py-3 whitespace-nowrap">商户国家</th>
+<th class="px-3 py-3 whitespace-nowrap">商户城市</th>
+<th class="px-3 py-3 whitespace-nowrap">商户地址</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH_992837461</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH123456</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">482012 **** **** 8829</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">CARD001</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">VISA-广告卡</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">北美广告投放专用卡</td>
+<td class="px-3 py-3 whitespace-nowrap"><span class="px-2 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded">授权消费</span></td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">2026-03-20 14:22:01</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">4,200.00 USD</td>
+<td class="px-3 py-3 whitespace-nowrap"><span class="px-2 py-1 bg-green-50 text-green-600 text-xs font-bold rounded">成功</span></td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">Google Ads</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">5818</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">US</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">Mountain View</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">123 Ad Street, Mountain View, CA 94043</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH_992837462</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH123457</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">482012 **** **** 1024</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">CARD002</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">VISA-物流卡</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">AWS日常消耗</td>
+<td class="px-3 py-3 whitespace-nowrap"><span class="px-2 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded">授权消费</span></td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">2026-03-20 12:05:33</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">1,280.50 USD</td>
+<td class="px-3 py-3 whitespace-nowrap"><span class="px-2 py-1 bg-green-50 text-green-600 text-xs font-bold rounded">成功</span></td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">AMAZON WEB SVCS</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">5816</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">US</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">Seattle</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">1234 Main Street, Seattle, WA 98101</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH_992837463</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH123458</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">482012 **** **** 8829</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">CARD001</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">VISA-广告卡</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">北美广告投放专用卡</td>
+<td class="px-3 py-3 whitespace-nowrap"><span class="px-2 py-1 bg-purple-50 text-purple-600 text-xs font-bold rounded">授权消费追加</span></td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">2026-03-20 09:15:10</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">750.00 USD</td>
+<td class="px-3 py-3 whitespace-nowrap"><span class="px-2 py-1 bg-green-50 text-green-600 text-xs font-bold rounded">成功</span></td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">FACEBOOK ADS</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">5818</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">US</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">Menlo Park</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">567 Park Ave, Menlo Park, CA 94025</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-between mt-6">
+<p class="text-sm text-slate-400 tracking-tight">显示第 1 至 3 项，共 8,402 项记录</p>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-blue-600 transition-all" disabled><span class="iconify" data-icon="material-symbols:chevron-left"></span></button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-600 text-white font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-500 hover:text-blue-600 transition-all">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-500 hover:text-blue-600 transition-all">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-blue-600 transition-all"><span class="iconify" data-icon="material-symbols:chevron-right"></span></button>
+</div>
+</div>
+</div>
+
+<!-- Content Area - Settlement Details -->
+<div id="content-settle" class="hidden">
+<!-- Filters -->
+<div class="bg-white rounded-2xl p-6 mb-6 border border-slate-100 shadow-sm">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 items-end">
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">日期筛选</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" type="date" value="2026-03-01"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">至</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" type="date" value="2026-03-20"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">卡ID</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" placeholder="输入卡ID" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">清算交易ID</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" placeholder="输入清算交易ID" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">业务订单号</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" placeholder="输入业务订单号" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">授权ID</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" placeholder="输入授权ID" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">交易类型</label>
+<select class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500">
+<option>全部</option>
+<option>消费完成</option>
+<option>退款完成</option>
+<option>贷记完成</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase mb-2">清算时间</label>
+<input class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-1 focus:ring-blue-500" type="date" value="2026-03-20"/>
+</div>
+<div class="flex gap-2 lg:col-span-7 justify-end">
+<button class="bg-slate-100 text-slate-600 px-4 py-2.5 rounded-xl text-sm hover:bg-slate-200"><span class="iconify" data-icon="material-symbols:refresh"></span></button>
+<button class="bg-slate-800 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-900">查询</button>
+</div>
+</div>
+</div>
+
+<!-- Table -->
+<div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+<div class="table-wrapper">
+<table class="w-full text-left text-xs">
+<thead class="bg-slate-50 text-slate-400 uppercase font-bold sticky top-0 z-10">
+<tr>
+<th class="px-3 py-3 whitespace-nowrap">清算交易ID</th>
+<th class="px-3 py-3 whitespace-nowrap">业务订单号</th>
+<th class="px-3 py-3 whitespace-nowrap">授权码</th>
+<th class="px-3 py-3 whitespace-nowrap">卡号</th>
+<th class="px-3 py-3 whitespace-nowrap">卡ID</th>
+<th class="px-3 py-3 whitespace-nowrap">卡产品</th>
+<th class="px-3 py-3 whitespace-nowrap">卡别名</th>
+<th class="px-3 py-3 whitespace-nowrap">交易类型</th>
+<th class="px-3 py-3 whitespace-nowrap">授权时间</th>
+<th class="px-3 py-3 whitespace-nowrap">清算时间</th>
+<th class="px-3 py-3 whitespace-nowrap">记账金额</th>
+<th class="px-3 py-3 whitespace-nowrap">结算金额</th>
+<th class="px-3 py-3 whitespace-nowrap">商户名称</th>
+<th class="px-3 py-3 whitespace-nowrap">MCC</th>
+<th class="px-3 py-3 whitespace-nowrap">商户国家</th>
+<th class="px-3 py-3 whitespace-nowrap">商户城市</th>
+<th class="px-3 py-3 whitespace-nowrap">商户地址</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">SETTLE_992837461</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH_992837461</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH123456</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">482012 **** **** 8829</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">CARD001</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">VISA-广告卡</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">北美广告投放专用卡</td>
+<td class="px-3 py-3 whitespace-nowrap"><span class="px-2 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded">消费完成</span></td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">2026-03-20 14:22:01</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">2026-03-20 16:30:00</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">4,200.00 USD</td>
+<td class="px-3 py-3 font-mono text-slate-800 whitespace-nowrap">4,187.40 USD</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">Google Ads</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">5818</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">US</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">Mountain View</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">123 Ad Street, Mountain View, CA 94043</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">SETTLE_992837464</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH_992837464</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">AUTH123457</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">482012 **** **** 5531</td>
+<td class="px-3 py-3 font-mono text-slate-600 whitespace-nowrap">CARD003</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">VISA-广告卡</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">海淘购物测试</td>
+<td class="px-3 py-3 whitespace-nowrap"><span class="px-2 py-1 bg-red-50 text-red-600 text-xs font-bold rounded">退款完成</span></td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">2026-03-19 22:45:12</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">2026-03-20 10:00:00</td>
+<td class="px-3 py-3 font-mono text-slate-700 whitespace-nowrap">-9.99 USD</td>
+<td class="px-3 py-3 font-mono text-slate-800 whitespace-nowrap">-9.99 USD</td>
+<td class="px-3 py-3 text-slate-700 whitespace-nowrap">APPLE.COM/BILL</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">5812</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">US</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap">Cupertino</td>
+<td class="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">1 Apple Park Way, Cupertino, CA 95014</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-between mt-6">
+<p class="text-sm text-slate-400 tracking-tight">显示第 1 至 2 项，共 6,102 项记录</p>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-blue-600 transition-all" disabled><span class="iconify" data-icon="material-symbols:chevron-left"></span></button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-600 text-white font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-500 hover:text-blue-600 transition-all">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-500 hover:text-blue-600 transition-all">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-blue-600 transition-all"><span class="iconify" data-icon="material-symbols:chevron-right"></span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function switchTab(type) {
+            const tabs = ['auth', 'settle'];
+            tabs.forEach(t => {
+                document.getElementById(`content-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('tab-active');
+                document.getElementById(`tab-${t}`).classList.add('text-slate-400');
+                document.getElementById(`tab-${t}`).classList.remove('font-bold');
+            });
+
+            document.getElementById(`content-${type}`).classList.remove('hidden');
+            document.getElementById(`tab-${type}`).classList.add('tab-active');
+            document.getElementById(`tab-${type}`).classList.remove('text-slate-400');
+            document.getElementById(`tab-${type}`).classList.add('font-bold');
+        }
+    </script>
+</body>
+</html>

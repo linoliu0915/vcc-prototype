@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拉卡拉跨境支付 - 主页</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f0f2f5; }
+        
+        /* 顶部导航栏 */
+        .header {
+            background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .logo-sub {
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+            border-left: 1px solid rgba(255,255,255,0.5);
+            padding-left: 12px;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 0;
+            list-style: none;
+        }
+        .nav-menu li {
+            position: relative;
+        }
+        .nav-menu a {
+            display: block;
+            padding: 0 24px;
+            height: 60px;
+            line-height: 60px;
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .nav-menu a:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+        .nav-menu a.active {
+            color: #fff;
+            background: rgba(255,255,255,0.15);
+        }
+        .nav-menu .has-dropdown::after {
+            content: '▼';
+            font-size: 10px;
+            margin-left: 6px;
+            opacity: 0.7;
+        }
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .dropdown-arrow {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        /* Banner */
+        .banner {
+            margin: 20px 40px;
+            height: 120px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .banner-text {
+            font-size: 32px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .banner-text .highlight {
+            color: #ffeaa7;
+        }
+
+        /* 主要内容区 */
+        .main-content {
+            padding: 0 40px 40px;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 20px;
+        }
+
+        /* 卡片通用样式 */
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .card-link {
+            font-size: 13px;
+            color: #1890ff;
+            text-decoration: none;
+        }
+        .card-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 钱包余额 */
+        .balance-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .balance-item:last-child {
+            margin-bottom: 0;
+        }
+        .currency-flag {
+            width: 24px;
+            height: 16px;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .currency-flag.usd { background: #e8f4f8; color: #1890ff; }
+        .currency-flag.hkd { background: #fff2e8; color: #fa8c16; }
+        .currency-flag.cnh { background: #f6ffed; color: #52c41a; }
+        .currency-flag.eur { background: #e6f7ff; color: #1890ff; }
+        .balance-info {
+            flex: 1;
+        }
+        .currency-name {
+            font-size: 13px;
+            color: #666;
+        }
+        .balance-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 4px;
+        }
+
+        /* 海外收款账户 */
+        .account-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .open-account-btn {
+            color: #1890ff;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        /* 底部区域 */
+        .bottom-section {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* 最近交易 */
+        .transaction-table {
+            width: 100%;
+            font-size: 13px;
+        }
+        .transaction-table th {
+            text-align: left;
+            padding: 12px 0;
+            color: #999;
+            font-weight: normal;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .transaction-table td {
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+        }
+        .transaction-table tr:last-child td {
+            border-bottom: none;
+        }
+        .status-success {
+            color: #52c41a;
+        }
+
+        /* 待办事项 */
+        .todo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+        .todo-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .todo-icon {
+            width: 40px;
+            height: 40px;
+            background: #f6ffed;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #52c41a;
+            font-size: 18px;
+        }
+        .todo-text {
+            font-size: 14px;
+            color: #333;
+        }
+        .todo-subtext {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        .todo-action {
+            color: #1890ff;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        /* VCC 入口样式 */
+        .vcc-entry {
+            position: relative;
+        }
+        .vcc-entry::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: #ff4d4f;
+            border-radius: 0 2px 2px 0;
+        }
+        .vcc-badge {
+            display: inline-block;
+            background: #ff4d4f;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: bold;
+        }
+
+        /* 弹窗样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 560px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .modal-header {
+            padding: 24px 24px 0;
+            text-align: center;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .modal-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .agreement-box {
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+        .agreement-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .agreement-content {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+        }
+        .agreement-content p {
+            margin-bottom: 8px;
+        }
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        .checkbox-wrapper label {
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+        .checkbox-wrapper a {
+            color: #1890ff;
+            text-decoration: none;
+        }
+        .checkbox-wrapper a:hover {
+            text-decoration: underline;
+        }
+        .modal-footer {
+            padding: 0 24px 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .btn {
+            height: 40px;
+            padding: 0 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #1890ff;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #40a9ff;
+        }
+        .btn-primary:disabled {
+            background: #d9d9d9;
+            cursor: not-allowed;
+        }
+        .btn-default {
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            color: #666;
+        }
+        .btn-default:hover {
+            color: #1890ff;
+            border-color: #1890ff;
+        }
+
+        /* 页面切换 */
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主页 -->
+    <div id="home-page" class="page active">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 40px;">
+                <div class="logo-area">
+                    <div class="logo">拉卡拉</div>
+                    <div class="logo-sub">跨境支付</div>
+                </div>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="#" class="active">主页</a></li>
+                        <li><a href="#">平台收款</a></li>
+                        <li><a href="#" class="has-dropdown">多币种钱包</a></li>
+                        <li><a href="#" class="has-dropdown">对账管理</a></li>
+                        <li><a href="#" class="has-dropdown">货币兑换</a></li>
+                        <li><a href="#" class="has-dropdown">外贸收款</a></li>
+                        <li><a href="#" class="vcc-entry" onclick="goToVCC()">海外VCC卡<span class="vcc-badge">NEW</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="user-area">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <span>20251127171901@lakata.com</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Banner -->
+        <div class="banner">
+            <div class="banner-text">
+                东南亚、非洲B2B收款 <span class="highlight">惊喜上线！</span>
+            </div>
+        </div>
+
+        <!-- 主要内容 -->
+        <div class="main-content">
+            <!-- 钱包余额 -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 class="card-title" style="margin: 0;">钱包余额</h3>
+                </div>
+                <div class="balance-item">
+                    <div class="currency-flag usd">🇺🇸</div>
+                    <div class="balance-info">
+                        <div class="currency-name">USD 美元</div>
+                        <div class="balance-amount">$ 999,999,999.99</div>
+                    </div>
+                </div>
+                <div class="balance-item">
+                    <div class="currency-flag hkd">🇭🇰</div>
+                    <div class="balance-info">
+                        <div class="currency-name">HKD 港币</div>
+                        <div class="balance-amount">$ 999,984,223.86</div>
+                    </div>
+                </div>
+                <div class="balance-item">
+                    <div class="currency-flag cnh">🇨🇳</div>
+                    <div class="balance-info">
+                        <div class="currency-name">CNH 离岸人民币</div>
+                        <div class="balance-amount">¥ 999,999,999.99</div>
+                    </div>
+                </div>
+                <div class="balance-item">
+                    <div class="currency-flag eur">🇪🇺</div>
+                    <div class="balance-info">
+                        <div class="currency-name">EUR 欧元</div>
+                        <div class="balance-amount">€ 999,999,999.99</div>
+                    </div>
+                </div>
+                <div style="margin-top: 16px;">
+                    <a href="#" class="card-link">查看更多</a>
+                </div>
+            </div>
+
+            <!-- 海外收款账户 -->
+            <div class="card">
+                <div class="account-header">
+                    <h3 class="card-title" style="margin: 0;">海外收款账户</h3>
+                    <a href="#" class="open-account-btn">开通海外收款账号 →</a>
+                </div>
+                <div style="min-height: 200px; display: flex; align-items: center; justify-content: center; color: #999;">
+                    <a href="#" class="card-link">查看更多</a>
+                </div>
+            </div>
+
+            <!-- 底部区域 -->
+            <div class="bottom-section">
+                <!-- 最近交易 -->
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 class="card-title" style="margin: 0;">最近交易</h3>
+                        <a href="#" class="card-link">全部交易</a>
+                    </div>
+                    <table class="transaction-table">
+                        <thead>
+                            <tr>
+                                <th>类型</th>
+                                <th>交易时间</th>
+                                <th>币种</th>
+                                <th>金额</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>钱包提现</td>
+                                <td>2025-12-04 09:38:44</td>
+                                <td>JPY</td>
+                                <td>3,548</td>
+                                <td class="status-success">成功</td>
+                            </tr>
+                            <tr>
+                                <td>钱包提现</td>
+                                <td>2025-12-04 09:38:40</td>
+                                <td>JPY</td>
+                                <td>3,026</td>
+                                <td class="status-success">成功</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 待办事项 -->
+                <div class="card">
+                    <h3 class="card-title">待办事项</h3>
+                    <div class="todo-item">
+                        <div class="todo-content">
+                            <div class="todo-icon">📝</div>
+                            <div>
+                                <div class="todo-text">实名认证</div>
+                                <div class="todo-subtext">您正在进行实名认证资料更新，请尽快完成</div>
+                            </div>
+                        </div>
+                        <a href="#" class="todo-action">立即前往</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VCC直客系统页面 -->
+    <div id="vcc-page" class="page">
+        <div style="height: 100vh; display: flex; align-items: center; justify-content: center; background: #f0f2f5;">
+            <div style="text-align: center;">
+                <h1 style="font-size: 48px; color: #1890ff; margin-bottom: 20px;">海外VCC卡系统</h1>
+                <p style="font-size: 18px; color: #666; margin-bottom: 40px;">正在加载VCC直客系统...</p>
+                <button onclick="backToHome()" style="padding: 12px 32px; font-size: 16px; background: #1890ff; color: #fff; border: none; border-radius: 4px; cursor: pointer;">返回主页</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 首次进入弹窗 -->
+    <div class="modal-overlay" id="vcc-auth-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">开通海外VCC卡服务</div>
+                <div class="modal-subtitle">申请开通海外VCC卡服务，畅享全球支付体验</div>
+            </div>
+            <div class="modal-body">
+                <div class="agreement-box">
+                    <div class="agreement-title">海外VCC卡服务协议</div>
+                    <div class="agreement-content">
+                        <p><strong>第一条 服务内容</strong></p>
+                        <p>1.1 海外VCC卡服务是由拉卡拉国际提供的虚拟信用卡服务，支持全球范围内的线上支付。</p>
+                        <p>1.2 用户可通过本平台申请、管理、充值海外VCC卡，用于跨境电商、广告投放、SaaS订阅等场景的支付需求。</p>
+                        <p><strong>第二条 用户资格</strong></p>
+                        <p>2.1 用户须为依法注册并有效存续的企业或个体工商户。</p>
+                        <p>2.2 用户须完成实名认证并通过平台审核。</p>
+                        <p>2.3 用户须遵守相关法律法规及平台规则，不得将VCC卡用于非法交易。</p>
+                        <p><strong>第三条 服务费用</strong></p>
+                        <p>3.1 开卡费：每张卡片收取固定开卡费用。</p>
+                        <p>3.2 交易手续费：按交易金额的一定比例收取。</p>
+                        <p>3.3 其他费用：包括但不限于充值费、退卡费等，具体以平台公示为准。</p>
+                        <p><strong>第四条 风险提示</strong></p>
+                        <p>4.1 用户应妥善保管卡片信息，因信息泄露导致的损失由用户自行承担。</p>
+                        <p>4.2 跨境支付可能受汇率波动影响，具体以交易时汇率为准。</p>
+                        <p><strong>第五条 协议变更与终止</strong></p>
+                        <p>5.1 平台有权根据业务需要修改本协议，修改后的协议将在平台公示。</p>
+                        <p>5.2 用户违反本协议或相关法律法规的，平台有权暂停或终止服务。</p>
+                    </div>
+                </div>
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="agreement-check" onchange="toggleSubmitBtn()">
+                    <label for="agreement-check">我已阅读并同意《海外VCC卡服务协议》，确认申请开通海外VCC卡服务。</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeModal()">暂不申请</button>
+                <button class="btn btn-primary" id="submit-btn" onclick="applyVCC()" disabled>确认申请</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 标记是否已申请过
+        let hasAppliedVCC = localStorage.getItem('vccApplied') === 'true';
+
+        // 进入VCC系统
+        function goToVCC() {
+            if (!hasAppliedVCC) {
+                // 首次进入，显示授权弹窗
+                document.getElementById('vcc-auth-modal').classList.add('show');
+            } else {
+                // 已申请过，直接跳转到直客客户端首页
+                window.location.href = 'index.html';
+            }
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('vcc-auth-modal').classList.remove('show');
+            // 清空复选框
+            document.getElementById('agreement-check').checked = false;
+            toggleSubmitBtn();
+        }
+
+        // 切换提交按钮状态
+        function toggleSubmitBtn() {
+            const checked = document.getElementById('agreement-check').checked;
+            document.getElementById('submit-btn').disabled = !checked;
+        }
+
+        // 申请VCC服务
+        function applyVCC() {
+            // 标记已申请
+            localStorage.setItem('vccApplied', 'true');
+            hasAppliedVCC = true;
+            
+            // 关闭弹窗
+            closeModal();
+            
+            // 提示申请成功
+            alert('申请成功！欢迎进入海外VCC卡系统。');
+            
+            // 跳转到直客客户端首页
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

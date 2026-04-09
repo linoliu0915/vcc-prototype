@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>拉卡拉国际VCC - 申请开卡</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', 'Microsoft YaHei', sans-serif; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="flex min-h-screen text-slate-800">
+<!-- Sidebar -->
+<aside class="w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full">
+<div class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+<span class="iconify text-white text-2xl" data-icon="mdi:bank-outline"></span>
+</div>
+<span class="text-xl font-bold text-blue-900 leading-tight">拉卡拉国际<br/><span class="text-sm font-medium opacity-70 text-blue-600">VCC 直客端</span></span>
+</div>
+<nav class="flex-1 mt-4">
+<a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="index.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:dashboard-outline"></span>
+<span>工作台首页</span>
+</a>
+<a class="flex items-center px-6 py-4 sidebar-active transition-all border-r-4 border-transparent" href="cards.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:credit-card-outline"></span>
+<span class="font-semibold">卡片管理</span>
+</a>
+<a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="finance.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:account-balance-wallet-outline"></span>
+<span>资金充值</span>
+</a>
+<a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="transaction.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:list-alt-outline"></span>
+<span>交易查询</span>
+</a>
+<a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="downloads.html">
+<span class="iconify mr-3 text-xl" data-icon="material-symbols:download-for-offline-outline"></span>
+<span>文件下载</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 flex-1 pb-12">
+<header class="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors" href="cards.html">
+<span class="iconify text-xl" data-icon="material-symbols:arrow-back-ios-new"></span>
+<span class="text-sm font-medium">返回</span>
+</a>
+<h1 class="text-xl font-bold text-slate-800 ml-4">申请开卡</h1>
+</div>
+</header>
+<div class="p-8">
+<div class="max-w-3xl mx-auto">
+<div class="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm">
+<div class="mb-6 flex items-center gap-4">
+<div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+<span class="iconify text-blue-600 text-2xl" data-icon="material-symbols:add-card"></span>
+</div>
+<div>
+<h2 class="text-xl font-bold text-slate-800">申请开卡</h2>
+<p class="text-slate-400 text-xs">填写开卡信息，立即开启全球支付</p>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">选择卡产品 <span class="text-red-500">*</span></label>
+<select id="cardProduct" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-100 focus:border-blue-300">
+<option value="">请选择卡产品</option>
+<option value="advertising">VISA-广告卡</option>
+<option value="logistics">VISA-物流卡</option>
+</select>
+</div>
+<div id="productIntro" class="hidden bg-blue-50 border border-blue-100 rounded-xl p-5">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+<span class="iconify text-blue-600 text-2xl" data-icon="material-symbols:info-outline"></span>
+</div>
+<div class="flex-1">
+<h4 id="introTitle" class="font-bold text-slate-800 mb-2">卡产品介绍</h4>
+<p id="introDesc" class="text-sm text-slate-600 leading-relaxed">请选择卡产品查看详细介绍</p>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">币种 <span class="text-red-500">*</span></label>
+<select id="currencySelect" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-100 focus:border-blue-300">
+<option value="">请选择币种</option>
+<option value="USD">USD</option>
+<option value="HKD">HKD</option>
+<option value="EUR">EUR</option>
+<option value="GBP">GBP</option>
+<option value="JPY">JPY</option>
+</select>
+</div>
+<div id="feeDisplay" class="hidden bg-amber-50 border border-amber-100 rounded-xl p-4 mt-2">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+<span class="iconify text-amber-600 text-lg" data-icon="material-symbols:info-outline"></span>
+</div>
+<div>
+<p class="text-sm text-slate-600">开卡手续费</p>
+<p class="font-bold text-slate-800" id="feeAmount">0.30 USD</p>
+</div>
+</div>
+</div>
+
+<label class="block text-sm font-bold text-slate-700 mb-2">单笔限额 <span class="text-red-500">*</span></label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-100 focus:border-blue-300" type="text" placeholder="请输入单笔交易限额"/>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">卡总限额 <span class="text-red-500">*</span></label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-100 focus:border-blue-300" type="text" placeholder="请输入卡片生命周期总限额"/>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">开卡用途 <span class="text-red-500">*</span></label>
+<select class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-100 focus:border-blue-300">
+<option value="">请选择开卡用途</option>
+<option>广告营销</option>
+<option>物流付款</option>
+<option>其他</option>
+</select>
+</div>
+<div class="flex gap-4 pt-6 border-t border-slate-100">
+<button id="submitBtn" class="px-8 bg-blue-600 text-white py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition-all">提交申请</button>
+<a class="px-8 bg-slate-100 text-slate-600 py-2 rounded-lg font-bold text-sm hover:bg-slate-200 transition-all" href="cards.html">取消</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+const productIntro = {
+    advertising: {
+        title: 'VISA-广告卡',
+        desc: 'VISA-广告卡是面向跨境电商、广告营销等场景的专业虚拟卡产品。支持多币种结算，覆盖全球200+广告平台和渠道。适合支付Google Ads、Facebook Ads、TikTok Ads等广告费用，资金实时到账，账目清晰可查。'
+    },
+    logistics: {
+        title: 'VISA-物流卡',
+        desc: 'VISA-物流卡是面向跨境电商、国际物流等场景的专业虚拟卡产品。支持多币种结算，覆盖全球200+物流渠道和平台。适合支付运费、仓储费、清关费用等物流相关支出，资金实时到账，账目清晰可查。'
+    }
+};
+
+document.getElementById('cardProduct').addEventListener('change', function() {
+    const intro = document.getElementById('productIntro');
+    const title = document.getElementById('introTitle');
+    const desc = document.getElementById('introDesc');
+    
+    if (this.value && productIntro[this.value]) {
+        intro.classList.remove('hidden');
+        title.textContent = productIntro[this.value].title;
+        desc.textContent = productIntro[this.value].desc;
+    } else {
+        intro.classList.add('hidden');
+    }
+});
+
+const currencyFees = {
+    'USD': { amount: '0.30', symbol: 'USD' },
+    'HKD': { amount: '2.34', symbol: 'HKD' },
+    'EUR': { amount: '0.28', symbol: 'EUR' },
+    'GBP': { amount: '0.24', symbol: 'GBP' },
+    'JPY': { amount: '44.70', symbol: 'JPY' }
+};
+
+document.getElementById('currencySelect').addEventListener('change', function() {
+    const feeDisplay = document.getElementById('feeDisplay');
+    const feeAmount = document.getElementById('feeAmount');
+    
+    if (this.value && currencyFees[this.value]) {
+        feeDisplay.classList.remove('hidden');
+        feeAmount.textContent = currencyFees[this.value].amount + ' ' + currencyFees[this.value].symbol;
+    } else {
+        feeDisplay.classList.add('hidden');
+    }
+});
+
+document.getElementById('submitBtn').addEventListener('click', function() {
+    const cardProduct = document.querySelector('select:nth-of-type(1)').value;
+    const currency = document.querySelectorAll('select')[1].value;
+    const cardCount = document.querySelectorAll('input[type="number"]')[0].value;
+    const singleLimit = document.querySelectorAll('input[type="text"]')[0].value;
+    const totalLimit = document.querySelectorAll('input[type="text"]')[1].value;
+    const purpose = document.querySelectorAll('select')[2].value;
+    
+    const errors = [];
+    if (!cardProduct) errors.push('请选择卡产品');
+    if (!currency) errors.push('请选择币种');
+    if (!cardCount) errors.push('请输入开卡数量');
+    if (!singleLimit) errors.push('请输入单笔限额');
+    if (!totalLimit) errors.push('请输入卡总限额');
+    if (!purpose) errors.push('请选择开卡用途');
+    
+    if (errors.length > 0) {
+        alert('请完善以下信息：\n' + errors.join('\n'));
+        return;
+    }
+    
+    alert('开卡成功！');
+    window.location.href = 'cards.html';
+});
+</script>
+</body>
+</html>

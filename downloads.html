@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>拉卡拉国际VCC - 文件下载</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', 'Microsoft YaHei', sans-serif; background-color: #f8fafc; }
+        .sidebar-active { background-color: rgba(59, 130, 246, 0.1); color: #2563eb; border-right: 4px solid #2563eb; }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+        .table-wrapper::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        
+        .filter-btn {
+            @apply px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium hover:bg-slate-200 transition-all;
+        }
+        .filter-btn.active {
+            @apply bg-blue-600 text-white;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen text-slate-800">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full">
+        <div class="p-6 flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span class="iconify text-white text-2xl" data-icon="mdi:bank-outline"></span>
+            </div>
+            <span class="text-xl font-bold text-blue-900 leading-tight">拉卡拉国际<br/><span class="text-sm font-medium opacity-70 text-blue-600">VCC 直客端</span></span>
+        </div>
+        <nav class="flex-1 mt-4">
+            <a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="index.html">
+                <span class="iconify mr-3 text-xl" data-icon="material-symbols:dashboard-outline"></span>
+                <span>工作台首页</span>
+            </a>
+            <a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="cards.html">
+                <span class="iconify mr-3 text-xl" data-icon="material-symbols:credit-card-outline"></span>
+                <span>卡片管理</span>
+            </a>
+            <a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="finance.html">
+                <span class="iconify mr-3 text-xl" data-icon="material-symbols:account-balance-wallet-outline"></span>
+                <span>资金管理</span>
+            </a>
+            <a class="flex items-center px-6 py-4 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all border-r-4 border-transparent" href="transaction.html">
+                <span class="iconify mr-3 text-xl" data-icon="material-symbols:list-alt-outline"></span>
+                <span>交易查询</span>
+            </a>
+            <a class="flex items-center px-6 py-4 sidebar-active transition-all group" href="downloads.html">
+                <span class="iconify mr-3 text-xl" data-icon="material-symbols:download-for-offline-outline"></span>
+                <span class="font-semibold">文件下载</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="ml-64 flex-1">
+        <header class="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10">
+            <h1 class="text-xl font-bold text-slate-800">对账单下载中心</h1>
+            <div class="flex items-center gap-4">
+                <p class="text-xs text-slate-400 font-medium">账单保存期限: 12个月</p>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-all flex items-center gap-2">
+                    <span class="iconify" data-icon="material-symbols:refresh"></span>
+                    刷新列表
+                </button>
+            </div>
+        </header>
+
+        <div class="p-8">
+            <!-- 筛选区域 -->
+            <div class="bg-white rounded-2xl p-6 mb-6 border border-slate-100 shadow-sm">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- 账单类型 -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-3 tracking-wide">账单类型</label>
+                        <select class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" id="billType">
+                            <option value="all">全部账单</option>
+                            <option value="account-flow">账户流水账单</option>
+                            <option value="auth-trans">授权交易账单</option>
+                            <option value="settle-trans">清算交易账单</option>
+                        </select>
+                    </div>
+
+                    <!-- 账单周期 -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-3 tracking-wide">账单周期</label>
+                        <select class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" id="billPeriod">
+                            <option value="all">全部</option>
+                            <option value="daily">日账单</option>
+                            <option value="monthly">月账单</option>
+                        </select>
+                    </div>
+
+                    <!-- 账单生成时间 -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-3 tracking-wide">账单生成时间</label>
+                        <div class="flex gap-2">
+                            <input type="date" class="flex-1 px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" id="startDate" value="2026-03-01">
+                            <span class="flex items-center text-slate-400">至</span>
+                            <input type="date" class="flex-1 px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" id="endDate" value="2026-03-20">
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="flex items-end gap-2">
+                        <button class="flex-1 bg-slate-800 text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-900 transition-all flex items-center justify-center gap-2">
+                            <span class="iconify" data-icon="material-symbols:search"></span>
+                            查询
+                        </button>
+                        <button class="bg-slate-100 text-slate-600 px-4 py-3 rounded-xl text-sm hover:bg-slate-200 transition-all">
+                            <span class="iconify" data-icon="material-symbols:refresh"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-2xl shadow-lg shadow-blue-100 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-xs font-medium mb-1">账户流水账单</p>
+                            <p class="text-2xl font-bold">86<span class="text-sm font-normal text-blue-100">个</span></p>
+                        </div>
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                            <span class="iconify text-2xl" data-icon="material-symbols:account-balance"></span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-blue-100 mt-3">日账单 75 | 月账单 11</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 p-6 rounded-2xl shadow-lg shadow-indigo-100 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-indigo-100 text-xs font-medium mb-1">授权交易账单</p>
+                            <p class="text-2xl font-bold">124<span class="text-sm font-normal text-indigo-100">个</span></p>
+                        </div>
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                            <span class="iconify text-2xl" data-icon="material-symbols:receipt-long"></span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-indigo-100 mt-3">日账单 113 | 月账单 11</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-violet-500 to-violet-600 p-6 rounded-2xl shadow-lg shadow-violet-100 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-violet-100 text-xs font-medium mb-1">清算交易账单</p>
+                            <p class="text-2xl font-bold">98<span class="text-sm font-normal text-violet-100">个</span></p>
+                        </div>
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                            <span class="iconify text-2xl" data-icon="material-symbols:payments"></span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-violet-100 mt-3">日账单 87 | 月账单 11</p>
+                </div>
+            </div>
+
+            <!-- 账单列表 -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <h3 class="font-bold text-slate-800">账单列表</h3>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold">共 308 条</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold sticky top-0">
+                            <tr>
+                                <th class="px-6 py-4 text-left">账单名称</th>
+                                <th class="px-6 py-4 text-left">账单类型</th>
+                                <th class="px-6 py-4 text-left">账单周期</th>
+                                <th class="px-6 py-4 text-left">账单日期</th>
+                                <th class="px-6 py-4 text-left">生成时间</th>
+                                <th class="px-6 py-4 text-left">文件大小</th>
+                                <th class="px-6 py-4 text-left">状态</th>
+                                <th class="px-6 py-4 text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-green-50 text-green-600 rounded-lg flex items-center justify-center">
+                                            <span class="iconify text-lg" data-icon="material-symbols:table-chart"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 text-sm">ACC_FLOW_20260320.xlsx</p>
+                                            <p class="text-xs text-slate-400">ID: BILL_20260320001</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">账户流水账单</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">日账单</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-600">2026-03-20</td>
+                                <td class="px-6 py-4 text-sm text-slate-400">2026-03-21 02:30:15</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">245.8 KB</td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center gap-1 text-xs text-green-600">
+                                        <span class="iconify" data-icon="material-symbols:check-circle"></span>
+                                        可下载
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <button class="inline-flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-all">
+                                        <span class="iconify" data-icon="material-symbols:download"></span>
+                                        下载
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center">
+                                            <span class="iconify text-lg" data-icon="material-symbols:receipt-long"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 text-sm">AUTH_TRANS_20260320.xlsx</p>
+                                            <p class="text-xs text-slate-400">ID: BILL_20260320002</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium">授权交易账单</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">日账单</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-600">2026-03-20</td>
+                                <td class="px-6 py-4 text-sm text-slate-400">2026-03-21 03:15:22</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">1.2 MB</td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center gap-1 text-xs text-green-600">
+                                        <span class="iconify" data-icon="material-symbols:check-circle"></span>
+                                        可下载
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <button class="inline-flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-all">
+                                        <span class="iconify" data-icon="material-symbols:download"></span>
+                                        下载
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-violet-50 text-violet-600 rounded-lg flex items-center justify-center">
+                                            <span class="iconify text-lg" data-icon="material-symbols:payments"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 text-sm">SETTLE_TRANS_20260320.xlsx</p>
+                                            <p class="text-xs text-slate-400">ID: BILL_20260320003</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 bg-violet-50 text-violet-600 rounded-full text-xs font-medium">清算交易账单</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">日账单</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-600">2026-03-20</td>
+                                <td class="px-6 py-4 text-sm text-slate-400">2026-03-21 04:00:08</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">856.4 KB</td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center gap-1 text-xs text-green-600">
+                                        <span class="iconify" data-icon="material-symbols:check-circle"></span>
+                                        可下载
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <button class="inline-flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-all">
+                                        <span class="iconify" data-icon="material-symbols:download"></span>
+                                        下载
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-green-50 text-green-600 rounded-lg flex items-center justify-center">
+                                            <span class="iconify text-lg" data-icon="material-symbols:table-chart"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 text-sm">ACC_FLOW_20260301-20260331.xlsx</p>
+                                            <p class="text-xs text-slate-400">ID: BILL_20260301004</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">账户流水账单</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-orange-50 text-orange-600 rounded text-xs font-medium">月账单</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-600">2026-03</td>
+                                <td class="px-6 py-4 text-sm text-slate-400">2026-04-01 02:30:15</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">5.8 MB</td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center gap-1 text-xs text-green-600">
+                                        <span class="iconify" data-icon="material-symbols:check-circle"></span>
+                                        可下载
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <button class="inline-flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-all">
+                                        <span class="iconify" data-icon="material-symbols:download"></span>
+                                        下载
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center">
+                                            <span class="iconify text-lg" data-icon="material-symbols:receipt-long"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 text-sm">AUTH_TRANS_20260301-20260331.xlsx</p>
+                                            <p class="text-xs text-slate-400">ID: BILL_20260301006</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium">授权交易账单</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-orange-50 text-orange-600 rounded text-xs font-medium">月账单</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-600">2026-03</td>
+                                <td class="px-6 py-4 text-sm text-slate-400">2026-04-01 03:15:22</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">28.6 MB</td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center gap-1 text-xs text-green-600">
+                                        <span class="iconify" data-icon="material-symbols:check-circle"></span>
+                                        可下载
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <button class="inline-flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-all">
+                                        <span class="iconify" data-icon="material-symbols:download"></span>
+                                        下载
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="p-6 border-t border-slate-100 flex items-center justify-between">
+                    <p class="text-sm text-slate-400">显示第 1 至 5 项，共 308 项记录</p>
+                    <div class="flex items-center gap-2">
+                        <button class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all" disabled>
+                            <span class="iconify" data-icon="material-symbols:chevron-left"></span>
+                        </button>
+                        <button class="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-bold">1</button>
+                        <button class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-50 text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all">2</button>
+                        <button class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-50 text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all">3</button>
+                        <span class="text-slate-400">... 52</span>
+                        <button class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all">
+                            <span class="iconify" data-icon="material-symbols:chevron-right"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function switchTab(type) {
+            const tabs = ['auth', 'settle'];
+            tabs.forEach(t => {
+                document.getElementById(`content-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('tab-active');
+                document.getElementById(`tab-${t}`).classList.add('text-slate-400');
+                document.getElementById(`tab-${t}`).classList.remove('font-bold');
+            });
+
+            document.getElementById(`content-${type}`).classList.remove('hidden');
+            document.getElementById(`tab-${type}`).classList.add('tab-active');
+            document.getElementById(`tab-${type}`).classList.remove('text-slate-400');
+            document.getElementById(`tab-${type}`).classList.add('font-bold');
+        }
+    </script>
+</body>
+</html>
